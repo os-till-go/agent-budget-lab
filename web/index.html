@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Budget Lab · 把想法变成实验</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232d57e5'/%3E%3Cpath d='M18 44 32 16l14 28M24 34h16' fill='none' stroke='white' stroke-width='5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="#compression"><span class="brand-mark">A<span>·</span></span><span>BUDGET LAB<small>Agent Budget Lab · 交互实验室</small></span></a><div class="status"><i></i>本地运行 <span class="status-note">无需 API Key · 不上传数据</span></div><button class="button subtle small" id="guide-toggle">演示指南 <span>↗</span></button></header>
+  <main>
+    <section class="hero"><div><div class="eyebrow">LESS CONTEXT. BETTER EVIDENCE.</div><h1>少一点消耗，<br><span>会不会少一点正确？</span></h1><p>压缩工具输出，或用小试验筛选策略。<br>亲手改变条件，看看“省下来”的代价。</p></div><div class="hero-note"><div class="orbit"><span>01</span><b>反馈</b><span>02</span></div><p>两种前沿思路<br>两个可复现的小实验</p><small>真实执行 · 可控数据 · 不预设赢家</small></div></section>
+    <aside id="guide" class="guide" hidden><div><b>给组员演示 · 建议 3 分钟</b><ol><li>实验 01：先用“只留错误”运行修复，再切换“保留环境线索”。观察日志更短与任务成功是否一致。</li><li>实验 02：运行“容易样本优先”，看初筛与独立测试排名；再切换“打散样本”，或增加预算，比较结果。</li><li>改一个随机种子。一次演示不是稳定结论；数据是自制合成样本，执行器与模型的边界都写在页面里。</li></ol></div><button class="button subtle small" id="guide-close">收起 ×</button></aside>
+    <nav class="tabs" aria-label="选择实验"><button class="tab active" data-tab="compression"><span>01</span>工具输出压缩<small>信息保留 × 结果验证</small></button><button class="tab" data-tab="probe"><span>02</span>小试验筛选<small>小试验 × 预算分配</small></button></nav>
+
+    <section id="compression" class="experiment">
+      <div class="section-heading"><div><div class="eyebrow">EXPERIMENT 01</div><h2>有些线索，只出现一次。</h2><p>大部分通过日志没有帮助，但一个运行条件可能决定修复方向。</p></div><span class="pill">真实 Python 修复验收</span></div>
+      <div class="workbench">
+        <aside class="control-panel"><div class="panel-label">实验设置</div><label for="case-select">任务案例</label><select id="case-select" aria-label="任务案例"></select><p id="case-task" class="hint"></p>
+          <label for="noise">重复通过行 <output id="noise-value">140</output></label><input id="noise" type="range" min="20" max="500" step="20" value="140">
+          <label for="char-budget">压缩后字符上限 <output id="budget-value">1100</output></label><input id="char-budget" type="range" min="180" max="2000" step="20" value="1100"><p class="hint">上限只作用于压缩结果。字符数是精确计数，不冒充模型 token。</p>
+          <div class="panel-label spaced">压缩方式</div><div class="method-list" id="methods">
+            <label class="method"><input type="radio" name="method" value="full"><span><b>完整输出</b><small>所有测试与环境信息</small></span><i>01</i></label>
+            <label class="method selected"><input type="radio" name="method" value="errors" checked><span><b>只留错误</b><small>常见的简化过滤规则</small></span><i>02</i></label>
+            <label class="method"><input type="radio" name="method" value="context"><span><b>保留环境线索</b><small>错误 + 来源 / 配置 / 运行条件</small></span><i>03</i></label>
+            <label class="method"><input type="radio" name="method" value="custom"><span><b>自己写保留关键词</b><small>试试你自己的规则</small></span><i>04</i></label>
+          </div><div id="custom-box" hidden><label for="patterns">包含任一关键词的行被保留</label><input id="patterns" value="FAILED|AssertionError|SUMMARY" placeholder="用 | 分隔，按字面匹配"></div>
+          <button class="button full" id="compare-all">比较全部三种方式 ↗</button>
+        </aside>
+        <div class="workspace"><div class="metric-strip"><div><small>原始输出</small><strong id="original-count">—</strong><span>字符</span></div><div><small>送给执行器</small><strong id="compressed-count">—</strong><span>字符</span></div><div class="accent"><small>本次减少</small><strong id="saved-percent">—</strong><span>字符，不含重查成本</span></div></div>
+          <div class="log-grid"><article class="log-card"><div class="card-head"><span><i class="dot gray"></i>原始工具输出</span><button class="text-button" id="jump-clue">定位环境行</button></div><pre id="original-log" tabindex="0"></pre></article><article class="log-card editable"><div class="card-head"><span><i class="dot blue"></i>执行器实际看到的内容</span><span class="mini-label">可直接编辑</span></div><textarea id="compressed-log" spellcheck="false" aria-label="执行器可见的日志"></textarea></article></div>
+          <div class="repair-bar"><div><b>下一步，怎么修？</b><small>固定诊断器只读取右侧日志；也可以由你选择补丁。</small></div><select id="patch-select" aria-label="修复方式"></select><button class="button primary" id="run-repair">运行修复 <span>→</span></button></div>
+          <div id="repair-result" class="empty-state"><span>↳</span><div><b>先观察，再验证。</b><p>点击“运行修复”，查看实际补丁与独立验收用例。</p></div></div>
+          <div id="comparison" hidden></div>
+        </div>
+      </div>
+      <div class="footnote-grid"><p><b>这个实验能说明什么？</b>同一个固定诊断规则，在信息被删减时可能选择不同修复。手动修改右侧日志，可以直接检验关键线索的作用。</p><p><b>边界</b>日志背景是合成 fixture，补丁验收实际运行。诊断器是透明规则，不是 LLM；这里没有冒充模型摘要，也不证明任何真实 Agent 的成功率。</p></div>
+    </section>
+
+    <section id="probe" class="experiment" hidden>
+      <div class="section-heading"><div><div class="eyebrow">EXPERIMENT 02</div><h2>小样本的第一名，<br class="mobile-only">值得押注吗？</h2><p>六个真实分类器，同一份数据、同一个预算上限。谁会选对下一步？</p></div><span class="pill">本地训练 · scikit-learn</span></div>
+      <div class="probe-layout"><aside class="control-panel"><div class="panel-label">初筛条件</div><label for="probe-setting">小试验先看到什么？</label><select id="probe-setting"><option value="biased">容易样本优先 · 有意制造偏移</option><option value="balanced">打散样本 · 初筛更接近开发集</option></select><p class="hint">只改变开发集的查看顺序，完整语料不变。第二种也不保证小样本总是有代表性。</p>
+        <label for="probe-size">每个候选的初筛样本 <output id="probe-size-value">8</output></label><input type="range" id="probe-size" min="4" max="24" value="8" step="4">
+        <label for="eval-budget">每种策略的预算上限 <output id="eval-budget-value">144</output></label><input type="range" id="eval-budget" min="144" max="576" value="144" step="48"><p class="hint">1 单位 = 一个候选读取一个有标签的开发样本。复用已看样本不重复计费。</p>
+        <label for="probe-seed">随机种子</label><div class="seed-row"><input type="number" id="probe-seed" min="0" max="99999" value="7"><button class="button subtle" id="new-seed" aria-label="更换随机种子">↻</button></div>
+        <button class="button primary full" id="run-probe">训练并运行三种策略 →</button><p class="hint" id="probe-run-note">首次运行需加载本地机器学习库，请稍候。</p>
+        <div class="small-note"><b>比较的是什么？</b><p>随机整体验证、小试验一次排序、逐轮加大样本并淘汰。它们使用相同候选池，不调用 LLM。</p></div>
+      </aside><div class="probe-main"><div id="probe-empty" class="probe-intro"><div class="diagram"><div>6 个候选</div><span>→</span><div>便宜的小试验</div><span>→</span><div class="diagram-end">选择 / 加测</div></div><h3>看到高分之前，先问它看过什么。</h3><p>数据中既有直接请求，也有“不是付款问题，而是无法登录”这样的干扰样本。初筛看得太少，关键词捷径也可能排第一。</p><div class="preview-ticket"><small>一个合成工单示例</small><p>“This is not a payment issue. Please reset my password.”</p><span>期望路由：账户登录</span></div><p class="hint">运行后展示模型实际得分、筛选过程和独立测试错误，不预填模拟分数。</p></div>
+        <div id="probe-results" hidden><div class="result-top"><div id="probe-dataset"></div><button class="button subtle small" id="export-probe">导出本轮 JSON ↓</button></div><div class="policy-cards" id="policy-cards"></div>
+          <article class="surface"><div class="card-head"><span>初筛高分 ≠ 最终表现</span><span class="mini-label">相同模型，三个评价范围</span></div><div class="legend"><span><i class="key probe-key"></i>小试验</span><span><i class="key dev-key"></i>完整开发集</span><span><i class="key test-key"></i>独立测试集</span></div><div id="score-chart" class="score-chart"></div><p class="chart-note">完整开发集与测试分数在策略锁定后用于诊断展示，选择器不读取测试标签。合成数据不代表真实客服任务的泛化成绩。</p></article>
+          <div class="detail-grid"><article class="surface"><div class="card-head"><span>初筛实际读到的样本</span><span class="mini-label" id="probe-sample-count"></span></div><div id="probe-samples" class="ticket-list"></div></article><article class="surface"><div class="card-head"><span>关键词捷径的测试错误</span><span class="mini-label">真实预测</span></div><div id="test-examples" class="ticket-list"></div></article></div>
+          <article class="surface"><div class="card-head"><span>预算花在了哪里？</span><select id="trace-policy" aria-label="查看策略轨迹"><option value="random">随机整体验证</option><option value="probe">小试验一次排序</option><option value="halving">逐轮加测淘汰</option></select></div><div id="trace"></div></article>
+          <div class="protocol" id="protocol"></div>
+        </div>
+      </div></div>
+      <div class="footnote-grid"><p><b>实验思路</b>自动实验、小试验与预算分配：在同等资源约束下，怎样尽快找到好方案？</p><p><b>学习提示</b>增加预算、换种子或改变初筛顺序，结果可能改变。单任务搜索变好不等于 Agent 学会了跨任务的自我改进。</p></div>
+    </section>
+    <footer><span>BUDGET LAB <i>／</i> A small experiment is a good place to start.</span><span>本地运行 · 开源学习工具</span></footer>
+  </main>
+  <div id="toast" role="status" hidden></div>
+</body>
+</html>

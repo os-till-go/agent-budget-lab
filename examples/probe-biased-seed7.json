@@ -1,0 +1,411 @@
+{
+  "seed": 7,
+  "setting": "biased",
+  "probe_n": 8,
+  "budget": 144,
+  "train_n": 360,
+  "dev_n": 96,
+  "test_n": 144,
+  "scores": [
+    {
+      "id": "keywords",
+      "name": "关键词捷径",
+      "detail": "从左到右遇到第一个关键词就决定类别",
+      "probe_score": 100.0,
+      "dev_score": 29.17,
+      "test_score": 20.83,
+      "fit_ms": 0
+    },
+    {
+      "id": "word_nb",
+      "name": "词袋 · NB",
+      "detail": "词级 TF-IDF + 朴素贝叶斯",
+      "probe_score": 100.0,
+      "dev_score": 100.0,
+      "test_score": 100.0,
+      "fit_ms": 4.24
+    },
+    {
+      "id": "word_lr",
+      "name": "词袋 · LR",
+      "detail": "词级 TF-IDF + 逻辑回归",
+      "probe_score": 100.0,
+      "dev_score": 100.0,
+      "test_score": 100.0,
+      "fit_ms": 8.38
+    },
+    {
+      "id": "bigram_nb",
+      "name": "双词组 · NB",
+      "detail": "1–2 gram TF-IDF + 朴素贝叶斯",
+      "probe_score": 100.0,
+      "dev_score": 100.0,
+      "test_score": 100.0,
+      "fit_ms": 5.41
+    },
+    {
+      "id": "bigram_lr",
+      "name": "双词组 · LR",
+      "detail": "1–2 gram TF-IDF + 逻辑回归",
+      "probe_score": 100.0,
+      "dev_score": 100.0,
+      "test_score": 100.0,
+      "fit_ms": 14.11
+    },
+    {
+      "id": "char_lr",
+      "name": "字符组 · LR",
+      "detail": "字符 3–5 gram TF-IDF + 逻辑回归",
+      "probe_score": 100.0,
+      "dev_score": 100.0,
+      "test_score": 100.0,
+      "fit_ms": 39.27
+    }
+  ],
+  "policies": [
+    {
+      "id": "random",
+      "selected": "word_lr",
+      "spent": 96,
+      "budget": 144,
+      "selection_n": 96,
+      "selection_score": 100.0,
+      "trace": [
+        {
+          "candidate": "word_lr",
+          "n": 96,
+          "score": 100.0,
+          "cost": 96,
+          "spent": 96
+        }
+      ],
+      "test_score": 100.0,
+      "dev_score": 100.0
+    },
+    {
+      "id": "probe",
+      "selected": "keywords",
+      "spent": 136,
+      "budget": 144,
+      "selection_n": 96,
+      "selection_score": 29.17,
+      "trace": [
+        {
+          "candidate": "keywords",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 8
+        },
+        {
+          "candidate": "word_nb",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 16
+        },
+        {
+          "candidate": "word_lr",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 24
+        },
+        {
+          "candidate": "bigram_nb",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 32
+        },
+        {
+          "candidate": "bigram_lr",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 40
+        },
+        {
+          "candidate": "char_lr",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 48
+        },
+        {
+          "candidate": "keywords",
+          "n": 96,
+          "score": 29.17,
+          "cost": 88,
+          "spent": 136
+        }
+      ],
+      "test_score": 20.83,
+      "dev_score": 29.17
+    },
+    {
+      "id": "halving",
+      "selected": "word_nb",
+      "spent": 144,
+      "budget": 144,
+      "selection_n": 72,
+      "selection_score": 100.0,
+      "trace": [
+        {
+          "candidate": "keywords",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 8
+        },
+        {
+          "candidate": "word_nb",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 16
+        },
+        {
+          "candidate": "word_lr",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 24
+        },
+        {
+          "candidate": "bigram_nb",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 32
+        },
+        {
+          "candidate": "bigram_lr",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 40
+        },
+        {
+          "candidate": "char_lr",
+          "n": 8,
+          "score": 100.0,
+          "cost": 8,
+          "spent": 48
+        },
+        {
+          "candidate": "keywords",
+          "n": 24,
+          "score": 33.33,
+          "cost": 16,
+          "spent": 64
+        },
+        {
+          "candidate": "word_nb",
+          "n": 24,
+          "score": 100.0,
+          "cost": 16,
+          "spent": 80
+        },
+        {
+          "candidate": "word_lr",
+          "n": 24,
+          "score": 100.0,
+          "cost": 16,
+          "spent": 96
+        },
+        {
+          "candidate": "word_nb",
+          "n": 72,
+          "score": 100.0,
+          "cost": 48,
+          "spent": 144
+        }
+      ],
+      "test_score": 100.0,
+      "dev_score": 100.0
+    }
+  ],
+  "probe_samples": [
+    {
+      "text": "I need you to track my parcel.",
+      "label": "delivery",
+      "kind": "直接请求",
+      "id": "207-delivery-12",
+      "true_name": "物流配送"
+    },
+    {
+      "text": "I need you to restart the failing application.",
+      "label": "technical",
+      "kind": "直接请求",
+      "id": "207-technical-20",
+      "true_name": "技术故障"
+    },
+    {
+      "text": "Please find my tracking number.",
+      "label": "delivery",
+      "kind": "直接请求",
+      "id": "207-delivery-2",
+      "true_name": "物流配送"
+    },
+    {
+      "text": "Can you check my credit card charge?",
+      "label": "billing",
+      "kind": "直接请求",
+      "id": "207-billing-20",
+      "true_name": "账单付款"
+    },
+    {
+      "text": "Can you send my invoice?",
+      "label": "billing",
+      "kind": "直接请求",
+      "id": "207-billing-5",
+      "true_name": "账单付款"
+    },
+    {
+      "text": "Please correct the bill.",
+      "label": "billing",
+      "kind": "直接请求",
+      "id": "207-billing-17",
+      "true_name": "账单付款"
+    },
+    {
+      "text": "I need you to restart the failing application.",
+      "label": "technical",
+      "kind": "直接请求",
+      "id": "207-technical-21",
+      "true_name": "技术故障"
+    },
+    {
+      "text": "I need you to fix the broken upload.",
+      "label": "technical",
+      "kind": "直接请求",
+      "id": "207-technical-2",
+      "true_name": "技术故障"
+    }
+  ],
+  "test_examples": [
+    {
+      "text": "I mentioned refund earlier, but my current request is to track my parcel.",
+      "label": "delivery",
+      "kind": "含干扰信息",
+      "id": "307-delivery-29",
+      "true_name": "物流配送",
+      "predictions": {
+        "keywords": "账单付款",
+        "word_nb": "物流配送",
+        "word_lr": "物流配送",
+        "bigram_nb": "物流配送",
+        "bigram_lr": "物流配送",
+        "char_lr": "物流配送"
+      }
+    },
+    {
+      "text": "My shipping problem is already resolved. Now I need to restart the failing application.",
+      "label": "technical",
+      "kind": "含干扰信息",
+      "id": "307-technical-17",
+      "true_name": "技术故障",
+      "predictions": {
+        "keywords": "物流配送",
+        "word_nb": "技术故障",
+        "word_lr": "技术故障",
+        "bigram_nb": "技术故障",
+        "bigram_lr": "技术故障",
+        "char_lr": "技术故障"
+      }
+    },
+    {
+      "text": "Do not route this to login. The actual request is to cancel this subscription.",
+      "label": "billing",
+      "kind": "含干扰信息",
+      "id": "307-billing-6",
+      "true_name": "账单付款",
+      "predictions": {
+        "keywords": "账户登录",
+        "word_nb": "账单付款",
+        "word_lr": "账单付款",
+        "bigram_nb": "账单付款",
+        "bigram_lr": "账单付款",
+        "char_lr": "账单付款"
+      }
+    },
+    {
+      "text": "Do not route this to application. The actual request is to check my credit card charge.",
+      "label": "billing",
+      "kind": "含干扰信息",
+      "id": "307-billing-35",
+      "true_name": "账单付款",
+      "predictions": {
+        "keywords": "技术故障",
+        "word_nb": "账单付款",
+        "word_lr": "账单付款",
+        "bigram_nb": "账单付款",
+        "bigram_lr": "账单付款",
+        "char_lr": "账单付款"
+      }
+    },
+    {
+      "text": "This is not a shipping issue. Please repair the server error.",
+      "label": "technical",
+      "kind": "含干扰信息",
+      "id": "307-technical-28",
+      "true_name": "技术故障",
+      "predictions": {
+        "keywords": "物流配送",
+        "word_nb": "技术故障",
+        "word_lr": "技术故障",
+        "bigram_nb": "技术故障",
+        "bigram_lr": "技术故障",
+        "char_lr": "技术故障"
+      }
+    },
+    {
+      "text": "This is not a password issue. Please cancel this subscription.",
+      "label": "billing",
+      "kind": "含干扰信息",
+      "id": "307-billing-7",
+      "true_name": "账单付款",
+      "predictions": {
+        "keywords": "账户登录",
+        "word_nb": "账单付款",
+        "word_lr": "账单付款",
+        "bigram_nb": "账单付款",
+        "bigram_lr": "账单付款",
+        "char_lr": "账单付款"
+      }
+    },
+    {
+      "text": "This is not a error issue. Please send my invoice.",
+      "label": "billing",
+      "kind": "含干扰信息",
+      "id": "307-billing-34",
+      "true_name": "账单付款",
+      "predictions": {
+        "keywords": "技术故障",
+        "word_nb": "账单付款",
+        "word_lr": "账单付款",
+        "bigram_nb": "账单付款",
+        "bigram_lr": "账单付款",
+        "char_lr": "账单付款"
+      }
+    },
+    {
+      "text": "This is not a billing issue. Please reschedule the shipment.",
+      "label": "delivery",
+      "kind": "含干扰信息",
+      "id": "307-delivery-12",
+      "true_name": "物流配送",
+      "predictions": {
+        "keywords": "账单付款",
+        "word_nb": "物流配送",
+        "word_lr": "物流配送",
+        "bigram_nb": "物流配送",
+        "bigram_lr": "物流配送",
+        "char_lr": "物流配送"
+      }
+    }
+  ],
+  "elapsed_ms": 1831,
+  "protocol": "自制合成工单；候选模型真实训练。预算单位=一个候选读取一个带标签的开发样本。候选训练成本对各策略相同，单独显示；测试集只在选择结束后评分，不回流选择器。相同模板族不代表真实业务泛化。"
+}
