@@ -6,8 +6,8 @@ import re
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-ROOT_FILES = [".gitattributes", ".gitignore", "README.md", "README.zh-CN.md", "LICENSE", "CHANGELOG.md", "VERIFICATION.md", "requirements.txt", "lab.py", "server.py", "test_lab.py", "start-demo.cmd"]
-FOLDERS = ["web", "examples", "previews", "scripts", ".github"]
+ROOT_FILES = [".gitattributes", ".gitignore", "README.md", "README.zh-CN.md", "LICENSE", "CHANGELOG.md", "VERIFICATION.md", "requirements.txt", "lab.py", "server.py", "test_lab.py", "model_tasks.py", "model_client.py", "model_experiment.py", "test_model_experiment.py", "start-demo.cmd"]
+FOLDERS = ["web", "examples", "previews", "scripts", "docs", ".github"]
 
 
 def package(version):

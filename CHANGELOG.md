@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.0 — 2026-11-13
+
+- Added a real-model pilot using native Ollama or a configurable Chat Completions compatible endpoint.
+- Added paired deployment contracts, a no-log control, a generic structured-line filter and a separately labelled oracle reference.
+- Added bounded original-log retrieval, cumulative provider-reported usage, asynchronous UI progress, trace export and local per-run persistence.
+- Kept four reserved tasks out of model runs; browser experiments are development-only.
+- Added related-work notes, protocol documentation and actual pilot traces, including failed prompt calibrations.
+- Kept both original offline demos. The installed 1B model does not reliably solve the paired tasks; this release makes no compression superiority claim.
+
 ## v0.1.0 — 2026-11-13
 
 First public release of Agent Budget Lab.

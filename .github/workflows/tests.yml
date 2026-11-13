@@ -19,6 +19,7 @@ jobs:
           python-version: ${{ matrix.python }}
           cache: pip
       - run: python -m pip install -r requirements.txt
-      - run: python -m unittest -v test_lab.py
+      - run: python -m unittest discover -v
       - run: node --check web/app.js
-      - run: python scripts/package_release.py --version v0.1.0
+      - run: node --check web/model.js
+      - run: python scripts/package_release.py --version v0.2.0

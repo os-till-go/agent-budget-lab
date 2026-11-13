@@ -6,13 +6,37 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232d57e5'/%3E%3Cpath d='M18 44 32 16l14 28M24 34h16' fill='none' stroke='white' stroke-width='5'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
   <script defer src="app.js"></script>
+  <script defer src="model.js"></script>
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="#compression"><span class="brand-mark">A<span>·</span></span><span>BUDGET LAB<small>Agent Budget Lab · 交互实验室</small></span></a><div class="status"><i></i>本地运行 <span class="status-note">无需 API Key · 不上传数据</span></div><button class="button subtle small" id="guide-toggle">演示指南 <span>↗</span></button></header>
+  <header class="topbar"><a class="brand" href="#compression"><span class="brand-mark">A<span>·</span></span><span>BUDGET LAB<small>Agent Budget Lab · 交互实验室</small></span></a><div class="status"><i></i>本地界面 <span class="status-note">规则演示 / 可选真实模型</span></div><button class="button subtle small" id="guide-toggle">演示指南 <span>↗</span></button></header>
   <main>
     <section class="hero"><div><div class="eyebrow">LESS CONTEXT. BETTER EVIDENCE.</div><h1>少一点消耗，<br><span>会不会少一点正确？</span></h1><p>压缩工具输出，或用小试验筛选策略。<br>亲手改变条件，看看“省下来”的代价。</p></div><div class="hero-note"><div class="orbit"><span>01</span><b>反馈</b><span>02</span></div><p>两种前沿思路<br>两个可复现的小实验</p><small>真实执行 · 可控数据 · 不预设赢家</small></div></section>
     <aside id="guide" class="guide" hidden><div><b>给组员演示 · 建议 3 分钟</b><ol><li>实验 01：先用“只留错误”运行修复，再切换“保留环境线索”。观察日志更短与任务成功是否一致。</li><li>实验 02：运行“容易样本优先”，看初筛与独立测试排名；再切换“打散样本”，或增加预算，比较结果。</li><li>改一个随机种子。一次演示不是稳定结论；数据是自制合成样本，执行器与模型的边界都写在页面里。</li></ol></div><button class="button subtle small" id="guide-close">收起 ×</button></aside>
-    <nav class="tabs" aria-label="选择实验"><button class="tab active" data-tab="compression"><span>01</span>工具输出压缩<small>信息保留 × 结果验证</small></button><button class="tab" data-tab="probe"><span>02</span>小试验筛选<small>小试验 × 预算分配</small></button></nav>
+    <nav class="tabs" aria-label="选择实验"><button class="tab active" data-tab="compression"><span>01</span>规则演示<small>信息保留 × 结果验证</small></button><button class="tab" data-tab="probe"><span>02</span>小试验筛选<small>小试验 × 预算分配</small></button><button class="tab" data-tab="model"><span>03</span>真实模型<small>成对任务 × 有限重查</small></button></nav>
+
+    <section id="model" class="experiment" hidden>
+      <div class="section-heading"><div><div class="eyebrow">REAL MODEL PILOT</div><h2>省下的上下文，<br>会在下一步花回来吗？</h2><p>相同代码与候选补丁，改变运行条件。让模型实际选择，再执行验收。</p></div><span class="pill">开发集 · 合成诊断任务</span></div>
+      <div class="probe-layout"><aside class="control-panel">
+        <div class="panel-label">模型连接</div><p id="model-status" class="hint">正在检查本地服务…</p><button id="refresh-model" class="button subtle small">重新检查连接</button>
+        <p class="hint">默认使用本机 Ollama。远程模型由启动环境配置；仅在点击运行后发送本实验的合成任务。密钥不进入浏览器或导出文件。</p>
+        <div class="panel-label spaced">任务与对照</div><label for="model-tasks">成对开发任务</label><select id="model-tasks"><option value="threshold">零值与缺省值 · 2 个变体</option><option value="unicode">Unicode 约定 · 2 个变体</option><option value="delimiter">分隔符约定 · 2 个变体</option><option value="all">全部开发任务 · 6 个变体</option></select>
+        <label for="model-queries">每个任务最多重查</label><select id="model-queries"><option value="0">0 次 · 单步补丁选择</option><option value="1">1 次 · 允许查询原始日志</option><option value="2">2 次 · 允许查询原始日志</option></select>
+        <p class="hint">无日志组始终禁止重查，检查题目与选项是否已足以解题。其余三组共享相同查询接口与上限。</p>
+        <label for="model-repeats">每个条件重复</label><select id="model-repeats"><option value="1">1 次 · 冒烟检查</option><option value="2">2 次</option><option value="3">3 次</option></select>
+        <label for="model-seed">种子（候选顺序与运行顺序）</label><input id="model-seed" type="number" min="0" max="99999" value="7">
+        <label class="oracle-check"><input id="model-oracle" type="checkbox">另加人工关键行参考组</label>
+        <button id="run-model" class="button primary full">运行真实模型 →</button><p id="model-progress" class="hint" role="status" aria-live="polite">默认 8 条实验，每条 1 次模型调用；不预填模拟分数。</p>
+      </aside><div class="probe-main">
+        <article class="surface model-intro"><div class="eyebrow">READ → CHOOSE → VERIFY</div><h3>让证据决定答案，而不是题目的措辞。</h3><p>同一对任务共享描述、代码和候选补丁，只改变日志中的运行约定。每组独立对话，最终答案提交后才运行验收。</p><div class="model-conditions"><span>完整输出</span><span>简单错误过滤</span><span>保留配置与错误</span><span>无日志对照</span></div><p class="hint">保留配置的规则只看行类型，不读正确答案。人工关键行组属于 oracle 参考；不与自动方法混称。当前压缩无需模型调用。</p></article>
+        <div id="model-results" hidden><div class="result-top"><strong id="model-run-title">本轮结果</strong><button id="export-model" class="button subtle small">导出完整 JSON ↓</button></div>
+          <article class="surface model-table-wrap"><table class="model-table"><thead><tr><th>输入方式</th><th>验收</th><th>成对全对</th><th>输入 token</th><th>输出 token</th><th>重查 / 调用</th><th>耗时</th></tr></thead><tbody id="model-summary"></tbody></table></article>
+          <p class="hint">输入 token 为每次服务端报告值的累计，包含重复发送的历史；未知用量显示“未知”。本机推理没有 API 账单，不折算为美元。不同输入长度，不是等 token 预算比较。</p>
+          <article class="surface"><div class="card-head"><span>逐题验收与实际调用</span><span class="mini-label">点击查看原始记录</span></div><div id="model-rows"></div></article>
+        </div>
+        <article class="surface model-reading"><div class="card-head"><span>为什么这样设计？</span><span class="mini-label">论文与工程资料</span></div><p><a href="https://arxiv.org/abs/2609.32961" target="_blank" rel="noreferrer">Beyond Token Savings</a>：同时测 token、成功率和实际执行耗时。</p><p><a href="https://arxiv.org/abs/2609.26121" target="_blank" rel="noreferrer">DTOC</a>：保留原始输出，允许按需恢复；效果依赖模型。</p><p><a href="https://arxiv.org/abs/2508.21433" target="_blank" rel="noreferrer">The Complexity Trap</a>：简单方法需要作为强基线，摘要也可能延长轨迹。</p><p class="hint">这里只借鉴评测问题与机制，未复现这些论文。留出任务不在浏览器开放，现有开发结果不能用于最终泛化结论。</p></article>
+      </div></div>
+    </section>
 
     <section id="compression" class="experiment">
       <div class="section-heading"><div><div class="eyebrow">EXPERIMENT 01</div><h2>有些线索，只出现一次。</h2><p>大部分通过日志没有帮助，但一个运行条件可能决定修复方向。</p></div><span class="pill">真实 Python 修复验收</span></div>

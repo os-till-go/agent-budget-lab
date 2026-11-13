@@ -19,7 +19,7 @@ function toast(message) {
   clearTimeout(timer); timer = setTimeout(() => { $("#toast").hidden = true; }, 5500);
 }
 function changeTab(name, updateHash = true) {
-  const tab = name === "probe" ? "probe" : "compression";
+  const tab = ["probe", "model"].includes(name) ? name : "compression";
   $$(".experiment").forEach(el => { el.hidden = el.id !== tab; });
   $$(".tab").forEach(el => { el.classList.toggle("active", el.dataset.tab === tab); el.setAttribute("aria-selected", String(el.dataset.tab === tab)); });
   if (updateHash) history.replaceState(null, "", "#" + tab);

@@ -1,21 +1,24 @@
 # Agent Budget Lab
 
-**Interactive, offline experiments in agent efficiency and reliable decisions.**
+**Interactive experiments in agent efficiency, with offline demos and an optional real-model pilot.**
 
 Agent Budget Lab makes two trade-offs tangible: what happens when you compress a tool's output, and what happens when you choose a strategy using a cheap, unrepresentative trial.
 
 [中文说明](README.zh-CN.md) · [Download a release](https://github.com/os-till-go/agent-budget-lab/releases) · [MIT License](LICENSE)
 
-> A learning playground, not a production agent or a research benchmark. Repair candidates execute real Python, and five lightweight classifiers train locally. The diagnosis policy is a transparent rule, not an LLM. Data is synthetic, and no model API is called.
+> A learning playground, not a production agent or a research benchmark. The original two demos remain offline. A third tab now runs a real model on paired diagnostic tasks with optional log retrieval. All task data is synthetic; candidate patches execute real Python.
 
-## Two experiments
+## Experiments
 
 | Experiment | Try this | What is actually measured? |
 |---|---|---|
 | **Tool-output compression** | Keep only errors, preserve runtime clues, or edit the visible log yourself. | Character counts, retained evidence and executable repair acceptance tests. |
 | **Cheap-probe strategy selection** | Change the sample order, probe size, budget and seed. | Actual classifier predictions, incremental evaluation budget, selected candidates and held-out accuracy. |
+| **Real-model diagnostic pilot** | Compare full logs, filtering, config retention and a no-log control; allow up to two raw-log queries. | Actual model-reported tokens, calls, retrievals, elapsed time, candidate acceptance and paired correctness. |
 
-The UI is in Chinese. All computation runs on your CPU; no API key, GPU, model weights or external dataset download is required after installing dependencies.
+The UI is in Chinese. The original two demos need no API key or model weights. The optional third tab needs Ollama with an installed model (default `llama3.2:1b`) or an explicitly configured compatible API. Remote providers receive the synthetic task and may charge for calls. Credentials stay in the server environment.
+
+See the [real-model protocol and actual pilot results](docs/model-experiment.md) and [related-work reading notes](docs/related-work.md) (Chinese). The local 1B model did not reliably solve paired tasks; these runs validate the harness and do not establish a winning compression method. Four reserved tasks were not evaluated by the model.
 
 ## Quick start
 
@@ -57,9 +60,10 @@ Selection finishes before held-out scoring. Full development/test charts are pos
 ## Develop and test
 
 ```bash
-python -m unittest -v test_lab.py
+python -m unittest discover -v
 node --check web/app.js  # optional JavaScript syntax check; Node is not a runtime dependency
-python scripts/package_release.py --version v0.1.0
+node --check web/model.js
+python scripts/package_release.py --version v0.2.0
 ```
 
 | File | Purpose |
@@ -71,7 +75,7 @@ python scripts/package_release.py --version v0.1.0
 | `examples/` | Actual sample outputs; the app never uses them as simulated live results |
 | `scripts/package_release.py` | Rebuild a distributable ZIP and SHA-256 checksum |
 
-To extend it, add a repair case, change the preserved keywords, add a classifier or alter the tie-breaker. Compare the same seeds and retain raw outputs. Integrating an LLM is a possible extension; it is not implemented in this release.
+To extend it, add a repair case, change the preserved keywords, add a classifier or alter the tie-breaker. Compare the same seeds and retain raw outputs. The optional model pilot lives in `model_tasks.py`, `model_client.py` and `model_experiment.py`; `scripts/run_model_experiment.py` uses the same engine as the browser. Raw runs are ignored by Git; curated actual examples are in `examples/model/`.
 
 ## Preview
 
