@@ -39,7 +39,7 @@ function setMetrics(original, compressed) {
 }
 function resetRepair() {
   $("#repair-result").className = "empty-state";
-  $("#repair-result").innerHTML = '<span>↳</span><div><b>先观察，再验证。</b><p>点击“运行修复”，查看实际补丁与独立验收用例。</p></div>';
+  $("#repair-result").innerHTML = '<span>↳</span><div><b>先观察，再验证。</b><p>点击“运行修复”，看选中了哪段代码，以及 5 项输入的实际输出是否符合预期。</p></div>';
 }
 async function refreshCompression() {
   const version = ++requestVersion;
@@ -64,6 +64,7 @@ async function refreshCompression() {
 function updateCase() {
   const selected = cases.find(c => c.id === $("#case-select").value);
   $("#case-task").textContent = selected.task;
+  renderCaseExplanation(selected.id);
   $("#patch-select").innerHTML = '<option value="auto">固定规则自动诊断</option>' + selected.options.map(o => `<option value="${escapeHTML(o.id)}">自己选：${escapeHTML(o.label)}</option>`).join("");
   refreshCompression();
 }
@@ -91,7 +92,7 @@ $("#run-repair").addEventListener("click", async () => {
     if (version !== requestVersion) return;
     const box = $("#repair-result");
     box.className = "repair-result" + (result.success ? "" : " failed");
-    box.innerHTML = `<div class="result-heading"><b>${result.success ? "✓ 验收通过" : "↳ 修复还不完整"} · ${escapeHTML(result.patch_label)}</b><span class="verdict">${result.passed} / ${result.total} passed</span></div><pre class="patch-code">${escapeHTML(result.patch_code)}</pre><div class="test-rows"><div class="test-row"><span></span><span>输入 → 实际输出</span><span>期望输出</span></div>${result.tests.map(t => `<div class="test-row ${t.passed ? "" : "bad"}"><span>${t.passed ? "✓" : "×"}</span><span>${escapeHTML(t.input)} → ${escapeHTML(t.actual)}</span><span>${escapeHTML(t.expected)}</span></div>`).join("")}</div><div class="evidence">${result.evidence.map(e => `<span>${e.retained ? "✓ 已保留" : "× 已丢失"}：<code>${escapeHTML(e.text)}</code></span>`).join("")}</div><p class="result-limit">${escapeHTML(result.executor)}</p>`;
+    box.innerHTML = `<div class="result-heading"><b>${result.success ? "✓ 验收通过" : "↳ 修复还不完整"} · ${escapeHTML(result.patch_label)}</b><span class="verdict">${result.passed} / ${result.total} 项通过</span></div><p class="result-explainer">下面是选中的修复代码。每一行验收都实际运行它：左边看输入与实际输出，右边看期望输出；全部一致才算修好。背景日志中的通过行不计入这 5 项验收。</p><pre class="patch-code">${escapeHTML(result.patch_code)}</pre><div class="test-rows"><div class="test-row"><span></span><span>输入 → 补丁实际输出</span><span>期望输出</span></div>${result.tests.map(t => `<div class="test-row ${t.passed ? "" : "bad"}"><span>${t.passed ? "✓" : "×"}</span><span>${escapeHTML(t.input)} → ${escapeHTML(t.actual)}</span><span>${escapeHTML(t.expected)}</span></div>`).join("")}</div><div class="evidence">${result.evidence.map(e => `<span>${e.retained ? "✓ 已保留" : "× 已丢失"}：<code>${escapeHTML(e.text)}</code></span>`).join("")}</div><p class="result-limit">${escapeHTML(result.executor)}</p>`;
   } catch (err) { toast(err.message); }
   finally { busyCompression = false; button.disabled = false; button.innerHTML = "运行修复 <span>→</span>"; }
 });
@@ -105,7 +106,7 @@ $("#compare-all").addEventListener("click", async () => {
     const box = $("#comparison"); box.hidden = false; box.className = "comparison";
     box.innerHTML = `<h3>同一个诊断器，同一套验收</h3><table><thead><tr><th>方式</th><th>字符数</th><th>减少</th><th>验收</th></tr></thead><tbody>${rows.map(r => `<tr><td>${methodNames[r.mode]}</td><td>${number(r.compressed_chars)}</td><td>${r.saved_percent}%</td><td class="${r.success ? "success" : "failure"}">${r.passed}/${r.total} ${r.success ? "通过" : "未通过"}</td></tr>`).join("")}</tbody></table><p class="hint">比较重新生成的三种日志，使用当前字符上限；不使用右侧手动编辑内容。</p>`;
   } catch (err) { toast(err.message); }
-  finally { button.disabled = false; button.textContent = "比较全部三种方式 ↗"; }
+  finally { button.disabled = false; button.textContent = "比较三种预设方式 ↗"; }
 });
 
 for (const [input,output] of [["#probe-size","#probe-size-value"],["#eval-budget","#eval-budget-value"]]) $(input).addEventListener("input", () => {
@@ -156,7 +157,7 @@ async function boot() {
   $("#run-repair").disabled = true; $("#compare-all").disabled = true;
   try {
     cases = (await api("/api/cases")).cases;
-    $("#case-select").innerHTML = cases.map((c,i) => `<option value="${escapeHTML(c.id)}">${i+1}. ${escapeHTML(c.title)}</option>`).join("");
+    $("#case-select").innerHTML = cases.map((c,i) => `<option value="${escapeHTML(c.id)}">${i+1}. ${escapeHTML(caseExplanations[c.id]?.name || c.title)}</option>`).join("");
     updateCase();
   } catch (err) { toast(err.message); }
 }

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Explained the purpose and concrete scenarios on all three demo pages, including full-width/half-width product identifiers, explicit zero values and quoted CSV fields.
+- Added inline control explanations, a glossary, walkthroughs, result-reading guidance and a live model-call plan. UI descriptions do not change model prompts or evaluation data.
+
 ## v0.2.0 — 2026-11-13
 
 - Added a real-model pilot using native Ollama or a configurable Chat Completions compatible endpoint.

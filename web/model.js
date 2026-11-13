@@ -1,6 +1,7 @@
 "use strict";
 let modelResult = null, modelRunning = false;
 const realMethodNames = {full:"完整输出",errors:"简单错误过滤",structured:"保留配置与错误",no_log:"无日志对照",oracle:"人工关键行参考"};
+const realTaskNames = {"threshold-0":"阈值 · 0 是有效输入","threshold-1":"阈值 · 0 代表默认值","unicode-0":"文字 · NFC 约定","unicode-1":"文字 · NFKC 约定","delimiter-0":"CSV · 逗号分栏","delimiter-1":"CSV · 分号分栏"};
 const tokenLabel = value => value === null || value === undefined ? "未知" : number(value);
 async function checkModel() {
   const el = $("#model-status");
@@ -15,7 +16,7 @@ function renderModel(result) {
   $("#model-results").hidden = false;
   $("#model-run-title").textContent = `${result.model?.model || "模型实验"} · ${result.id || "排队中"}`;
   $("#model-summary").innerHTML = (result.summary || []).map(r => `<tr><td>${realMethodNames[r.method]}</td><td>${r.successes}/${r.n} · ${r.success_rate}%</td><td>${r.both_variants_correct}/${r.complete_pairs}</td><td>${tokenLabel(r.input_tokens)}</td><td>${tokenLabel(r.output_tokens)}</td><td>${r.queries} / ${r.model_calls}${r.requests_failed || r.invalid_responses ? ` · 异常 ${r.requests_failed + r.invalid_responses}` : ""}</td><td>${(r.elapsed_ms/1000).toFixed(1)}s</td></tr>`).join("");
-  $("#model-rows").innerHTML = (result.rows || []).map(r => `<details class="model-row"><summary><span class="${r.success ? "success" : "failure"}">${r.success ? "✓" : "×"} ${escapeHTML(r.task_id)}</span><span>${realMethodNames[r.method]}</span><span>${r.choice ? "补丁 " + r.choice : escapeHTML(r.status)} · ${r.passed}/${r.total} 验收</span><span>${r.queries} 次重查</span></summary><p>重复 ${r.repeat+1} · ${tokenLabel(r.input_tokens)} 输入 / ${tokenLabel(r.output_tokens)} 输出 token · ${(r.elapsed_ms/1000).toFixed(2)}s</p><pre>${escapeHTML(JSON.stringify({visible_output:r.visible_output,trace:r.trace,retrievals:r.retrievals},null,2))}</pre></details>`).join("");
+  $("#model-rows").innerHTML = (result.rows || []).map(r => `<details class="model-row"><summary><span class="${r.success ? "success" : "failure"}">${r.success ? "✓" : "×"} ${escapeHTML(realTaskNames[r.task_id] || r.task_id)}</span><span>${realMethodNames[r.method]}</span><span>${r.choice ? "补丁 " + r.choice : escapeHTML(r.status)} · ${r.passed}/${r.total} 验收</span><span>${r.queries} 次重查</span></summary><p>重复 ${r.repeat+1} · ${tokenLabel(r.input_tokens)} 输入 / ${tokenLabel(r.output_tokens)} 输出 token · ${(r.elapsed_ms/1000).toFixed(2)}s</p><pre>${escapeHTML(JSON.stringify({visible_output:r.visible_output,trace:r.trace,retrievals:r.retrievals},null,2))}</pre></details>`).join("");
 }
 $("#refresh-model").addEventListener("click", checkModel);
 $("#run-model").addEventListener("click", async () => {
