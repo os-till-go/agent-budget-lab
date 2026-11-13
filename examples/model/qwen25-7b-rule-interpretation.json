@@ -1,0 +1,192 @@
+{
+  "id": "11f06ee0a250",
+  "kind": "development-rule-interpretation-v1",
+  "started_at": "2026-11-13T18:11:53.323972+00:00",
+  "model": {
+    "provider": "ollama",
+    "model": "qwen2.5:7b",
+    "base_url": "http://127.0.0.1:11434",
+    "temperature": 0,
+    "max_output_tokens": 400,
+    "context_tokens": 8192,
+    "api_key_configured": false,
+    "available": true,
+    "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+    "installed_models": [
+      "qwen2.5:7b",
+      "llama3.2:1b"
+    ]
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "when_none": {
+        "type": "integer"
+      },
+      "when_zero": {
+        "type": "integer"
+      },
+      "when_minus_two": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "when_none",
+      "when_zero",
+      "when_minus_two"
+    ],
+    "additionalProperties": false
+  },
+  "rows": [
+    {
+      "variant": 0,
+      "request": {
+        "model": "qwen2.5:7b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Read the runtime contract. Report the expected integer outputs for value=None, value=0 and value=-2. Return only JSON with keys when_none, when_zero, when_minus_two."
+          },
+          {
+            "role": "user",
+            "content": "If value is None, return the default 10. If value is zero, return zero. Otherwise convert value to an integer. Keep negative values unchanged."
+          }
+        ],
+        "stream": false,
+        "format": {
+          "type": "object",
+          "properties": {
+            "when_none": {
+              "type": "integer"
+            },
+            "when_zero": {
+              "type": "integer"
+            },
+            "when_minus_two": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "when_none",
+            "when_zero",
+            "when_minus_two"
+          ],
+          "additionalProperties": false
+        },
+        "options": {
+          "temperature": 0,
+          "seed": 7,
+          "num_predict": 100,
+          "num_ctx": 8192
+        }
+      },
+      "raw_response": {
+        "model": "qwen2.5:7b",
+        "created_at": "2026-11-13T18:11:54.7517586Z",
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"when_none\": 10,\n  \"when_zero\": 0,\n  \"when_minus_two\": -2\n}"
+        },
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 1416961100,
+        "load_duration": 6286100,
+        "prompt_eval_count": 82,
+        "prompt_eval_cached_count": 3,
+        "prompt_eval_duration": 311569000,
+        "eval_count": 29,
+        "eval_duration": 1069518000
+      },
+      "parsed": {
+        "when_none": 10,
+        "when_zero": 0,
+        "when_minus_two": -2
+      },
+      "expected": {
+        "when_none": 10,
+        "when_zero": 0,
+        "when_minus_two": -2
+      },
+      "success": true,
+      "elapsed_ms": 1418.6
+    },
+    {
+      "variant": 1,
+      "request": {
+        "model": "qwen2.5:7b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Read the runtime contract. Report the expected integer outputs for value=None, value=0 and value=-2. Return only JSON with keys when_none, when_zero, when_minus_two."
+          },
+          {
+            "role": "user",
+            "content": "If value is None or zero, return the default 10. Otherwise convert value to an integer. Keep negative values unchanged."
+          }
+        ],
+        "stream": false,
+        "format": {
+          "type": "object",
+          "properties": {
+            "when_none": {
+              "type": "integer"
+            },
+            "when_zero": {
+              "type": "integer"
+            },
+            "when_minus_two": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "when_none",
+            "when_zero",
+            "when_minus_two"
+          ],
+          "additionalProperties": false
+        },
+        "options": {
+          "temperature": 0,
+          "seed": 7,
+          "num_predict": 100,
+          "num_ctx": 8192
+        }
+      },
+      "raw_response": {
+        "model": "qwen2.5:7b",
+        "created_at": "2026-11-13T18:11:56.0935375Z",
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"when_none\": 10,\n  \"when_zero\": 10,\n  \"when_minus_two\": -2\n}"
+        },
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 1340253200,
+        "load_duration": 6916200,
+        "prompt_eval_count": 76,
+        "prompt_eval_cached_count": 49,
+        "prompt_eval_duration": 321969000,
+        "eval_count": 30,
+        "eval_duration": 995787000
+      },
+      "parsed": {
+        "when_none": 10,
+        "when_zero": 10,
+        "when_minus_two": -2
+      },
+      "expected": {
+        "when_none": 10,
+        "when_zero": 10,
+        "when_minus_two": -2
+      },
+      "success": true,
+      "elapsed_ms": 1341.54
+    }
+  ],
+  "limitations": [
+    "Two observed development cases only.",
+    "Task and output schema differ from patch selection; do not pool accuracies.",
+    "No candidates are supplied; this does not prove the model can interpret Python code."
+  ],
+  "state": "completed"
+}

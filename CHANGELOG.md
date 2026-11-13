@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Archived existing Qwen2.5-7B pilot traces and added two opt-in local diagnostics for evidence wording and rule interpretation. Results remain development observations, separate from compression comparisons.
+
 - Explained the purpose and concrete scenarios on all three demo pages, including full-width/half-width product identifiers, explicit zero values and quoted CSV fields.
 - Added inline control explanations, a glossary, walkthroughs, result-reading guidance and a live model-call plan. UI descriptions do not change model prompts or evaluation data.
 
